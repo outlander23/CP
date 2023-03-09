@@ -90,15 +90,36 @@ daysInMounth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 ##################################################---START-CODING---###############################################
 
 
-for _ in " "*getInt():
-    n,k=zzz()
-    s1 = getStr()
-    s2 = getStr()
 
-    ans = sorted(s1) == sorted(s2)
+s = getStr()
 
-    if(ans):
-        if(k>n and s1!=s2):ans = False
-        if(s1[n-k:k]!=s2[n-k:k]):ans = False
 
-    print("YES" if ans else "NO") 
+north = 0
+south = 0
+east = 0
+weast = 0
+
+for i in s:
+    if(i=='S'):
+        south+=1
+    elif(i=='W'):
+        weast+=1
+    elif(i=='E'):
+        east+=1
+    else:
+        north+=1
+
+
+ok = True
+
+if(north and south==0):
+    ok = False
+if(south and north ==0):
+    ok = False
+
+if(east and weast==0):
+    ok = False
+if (weast and east==0):
+    ok = False
+
+print("Yes" if ok else "No")
