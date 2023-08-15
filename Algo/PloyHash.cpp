@@ -47,4 +47,12 @@ public:
     {
         return power[n];
     }
+
+    void clear()
+    {
+        power.clear();
+        hash.clear();
+        power.push_back(1);
+        hash.push_back(0);
+    }
 };

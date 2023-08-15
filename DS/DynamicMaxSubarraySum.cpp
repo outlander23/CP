@@ -10,11 +10,11 @@ struct DynamicMaxSubarraySum
     DynamicMaxSubarraySum(int _N, int assign_value)
     {
         neutral = assign_value;
-        N = _N + 1; // add 1 to N
+        N = _N + 1;
         t.resize(4 * N);
         for (int i = 0; i < 4 * N; i++)
             t[i] = {0, 0, 0, 0};
-        build(1, 1, N); // change lower bound of build to 1
+        build(1, 1, N);
     }
     void build(int i, int l, int r)
     {
@@ -54,7 +54,7 @@ struct DynamicMaxSubarraySum
     }
     void modif(int pos, int val)
     {
-        modif(1, 1, N, pos, val); // change lower bound of pos to 1
+        modif(1, 1, N, pos, val);
     }
     node query(int i, int l, int r, int tl, int tr)
     {
@@ -71,6 +71,6 @@ struct DynamicMaxSubarraySum
     }
     node query(int pos)
     {
-        return query(1, 1, N, pos, pos); // change lower bound of pos to 1
+        return query(1, 1, N, pos, pos);
     }
 };

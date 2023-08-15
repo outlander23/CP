@@ -89,14 +89,20 @@
   },
   "C_Cpp.errorSquiggles": "Disabled",
   "files.exclude": {
-    "**/.git": true,
-    "**/.svn": true,
-    "**/.hg": true,
+    "**/*.git": true,
+    "**/*.svn": true,
+    "**/*.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     "**/input.txt": true,
     "**/output.txt": true,
-    "**.vscode": true
-  }
+    "**.vscode": true,
+    "**/source": true,
+    "**/*.!(cpp)": true
+},
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
+  "python.formatting.provider": "none"
 }

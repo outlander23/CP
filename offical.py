@@ -2,7 +2,7 @@ from sys import stdout, stdin, setrecursionlimit
 from io import BytesIO, IOBase
 from collections import *
 from itertools import *
-from random import * 
+from random import *
 from bisect import *
 from string import *
 from queue import *
@@ -11,7 +11,7 @@ from math import *
 from re import *
 from os import *
 
-####################################---fast-input-output----#########################################
+#################################### ---fast-input-output----#########################################
 
 
 class FastIO(IOBase):
@@ -60,7 +60,7 @@ class IOWrapper(IOBase):
 
 stdin, stdout = IOWrapper(stdin), IOWrapper(stdout)
 
-graph, mod, szzz =  {}, 10**9 + 7, lambda: sorted(zzz())
+graph, mod, szzz = {}, 10**9 + 7, lambda: sorted(zzz())
 def getStr(): return input()
 def getInt(): return int(input())
 def listStr(): return list(input())
@@ -77,7 +77,7 @@ dy = [0, 0, 1, -1, 1, -1, -1, 1]
 daysInMounth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
-#################################################---Some Rule For Me To Follow---#################################
+################################################# ---Some Rule For Me To Follow---#################################
 """
     --instants of Reading problem continuously try to understand them.
 
@@ -87,39 +87,4 @@ daysInMounth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 """
-##################################################---START-CODING---###############################################
-
-
-
-s = getStr()
-
-
-north = 0
-south = 0
-east = 0
-weast = 0
-
-for i in s:
-    if(i=='S'):
-        south+=1
-    elif(i=='W'):
-        weast+=1
-    elif(i=='E'):
-        east+=1
-    else:
-        north+=1
-
-
-ok = True
-
-if(north and south==0):
-    ok = False
-if(south and north ==0):
-    ok = False
-
-if(east and weast==0):
-    ok = False
-if (weast and east==0):
-    ok = False
-
-print("Yes" if ok else "No")
+################################################## ---START-CODING---###############################################

@@ -1,6 +1,7 @@
 // #pragma GCC optimize "fast-math"
 // #pragma GCC optimize("O3,unroll-loops")
 // #pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
+#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
 #pragma GCC diagnostic ignored "-Wunused-variable"
 
 #include "bits/stdc++.h"
@@ -9,10 +10,8 @@
 using namespace std;
 using namespace __gnu_pbds;
 
-#define endl "\n"
 #define EPSILON 1e-12
 #define int long long
-// #define ONLINE_JUDGE
 
 #define MULTI  \
     int _T;    \
@@ -43,7 +42,13 @@ const double pi = 4 * atan(1);
 vector<int> dx = {-1, +1, +0, +0, +1, -1, +1, -1};
 vector<int> dy = {+0, +0, +1, -1, +1, -1, -1, +1};
 
-/////////////////////////////////////----////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////
+
+void setIO(string s)
+{
+    freopen((s + ".in").c_str(), "r", stdin);
+    freopen((s + ".out").c_str(), "w", stdout);
+}
 
 int modpower(int x, int n, int m)
 {
@@ -53,6 +58,16 @@ int modpower(int x, int n, int m)
     u = (u * u) % m;
     if (n % 2 == 1)
         u = (u * x) % m;
+    return u;
+}
+int power(int x, int n)
+{
+    if (n == 0)
+        return 1;
+    int u = power(x, n / 2);
+    u = (u * u);
+    if (n % 2 == 1)
+        u = (u * x);
     return u;
 }
 
@@ -100,116 +115,20 @@ void printArray(int array[], int sz)
 //====================================================================================================
 //====================================================================================================
 
-int n, k;
-int a[200005];
-
-struct DynamicMaxSubarraySum
-{
-    struct node
-    {
-        int pref, suf, val, sum;
-    };
-    int N;
-    int neutral;
-    vector<node> t;
-    DynamicMaxSubarraySum(int _N, int assign_value)
-    {
-        neutral = assign_value;
-        N = _N + 1; // add 1 to N
-        t.resize(4 * N);
-        for (int i = 0; i < 4 * N; i++)
-            t[i] = {0, 0, 0, 0};
-        build(1, 1, N); // change lower bound of build to 1
-    }
-    void build(int i, int l, int r)
-    {
-        if (l == r)
-        {
-            t[i].pref = t[i].suf = t[i].val = t[i].sum = neutral;
-            return;
-        }
-        int mid = (l + r) >> 1;
-        build(2 * i, l, mid);
-        build(2 * i + 1, mid + 1, r);
-        t[i] = merge(t[2 * i], t[2 * i + 1]);
-    }
-    node merge(node a, node b)
-    {
-        node c;
-        c.pref = max(a.pref, a.sum + b.pref);
-        c.suf = max(b.suf, b.sum + a.suf);
-        c.val = max({a.val, b.val, a.suf + b.pref});
-        c.sum = a.sum + b.sum;
-        return c;
-    }
-
-    void modif(int i, int l, int r, int pos, int val)
-    {
-        if (l > pos || r < pos)
-            return;
-        if (l == pos && r == pos)
-        {
-            t[i].pref = t[i].suf = t[i].val = t[i].sum = val;
-            return;
-        }
-        int mid = (l + r) >> 1;
-        modif(2 * i, l, mid, pos, val);
-        modif(2 * i + 1, mid + 1, r, pos, val);
-        t[i] = merge(t[2 * i], t[2 * i + 1]);
-    }
-    void modif(int pos, int val)
-    {
-        modif(1, 1, N, pos, val); // change lower bound of pos to 1
-    }
-    node query(int i, int l, int r, int tl, int tr)
-    {
-        if (l > tr || r < tl)
-            return {0, 0, 0, 0};
-        if (l >= tl && r <= tr)
-            return t[i];
-        int mid = (l + r) >> 1;
-        return merge(query(2 * i, l, mid, tl, tr), query(2 * i + 1, mid + 1, r, tl, tr));
-    }
-    node query(int l, int r)
-    {
-        return query(1, 1, N, l, r); // change lower bound of l to 1
-    }
-    node query(int pos)
-    {
-        return query(1, 1, N, pos, pos); // change lower bound of pos to 1
-    }
-};
-
 void solve_the_probelm(int test_case)
 {
-
-    cin >> n >> k;
-    DynamicMaxSubarraySum ds(n, 0);
-    for (int i = 1; i <= n; i++)
-        cin >> a[i];
-
-    for (int i = 1; i < n; i++)
-    {
-        if (a[i] < 2 * a[i + 1])
-            ds.modif(i, 1);
-    }
-
-    int ans = 0;
-
-    for (int i = 1; i <= n - k; i++)
-    {
-        int sum = ds.query(i, i + k - 1).val;
-        ans += (sum == k);
-    }
-
-    cout << ans << endl;
 }
+
+#define endl "\n"
+// #define ONLINE_JUDGE
 
 ///////////////////////////////////------------------------///////////////////////////////////////////
 //====================================================================================================
 //====================================================================================================
+
 signed main()
 {
+
     int test_cases = 1;
     ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
 
