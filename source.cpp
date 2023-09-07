@@ -34,8 +34,8 @@ const int INF = 1e18;        // infinity
 const int mod = 1e9 + 7;     // mod
 const int base1 = 972663749; // base1
 const int base2 = 998244353; // base2
-const int mod1 = 1000000007; // mod1
-const int mod2 = 1000000009; // mod2
+const int mod1 = 1e9 + 7;    // mod1
+const int mod2 = 1e9 + 9;    // mod2
 
 const double pi = 4 * atan(1);
 
@@ -115,11 +115,20 @@ void printArray(int array[], int sz)
 //====================================================================================================
 //====================================================================================================
 
-void solve_the_probelm(int test_case)
+void solve_the_problem(int test_case)
 {
+    int x, y, a, b;
+    cin >> x >> y;
+    int ans = 0;
+    while (x or y)
+        ans += y - x, y /= 10, x /= 10;
+
+    cout << ans << endl;
+
+    // I think i understood the problem
 }
 
-#define endl "\n"
+// #define endl "\n"
 // #define ONLINE_JUDGE
 
 ///////////////////////////////////------------------------///////////////////////////////////////////
@@ -140,7 +149,7 @@ signed main()
     cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
 
     for (int test_case = 1; test_case <= test_cases; test_case++)
-        solve_the_probelm(test_case);
+        solve_the_problem(test_case);
 
 #ifndef ONLINE_JUDGE
     cout << "\nExecution Time : " << 1.0 * clock() / CLOCKS_PER_SEC << "s ";

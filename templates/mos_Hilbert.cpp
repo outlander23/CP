@@ -158,38 +158,30 @@ inline bool operator<(const Query &a, const Query &b)
 //====================================================================================================
 
 const int N = 1e6 + 5;
-
-int n, q, l, r, u, v;
-
+int n, q, l, r, u, v, k;
 vector<Query> qry;
-vector<int> adj[N];
 
-int a[N];
-bool vis[N];
+int A[N], CNT[N];
 
-int dfs(int u, int v, int res = 1)
+void func(int val, int operation, int &ans)
 {
-    if (u == v)
-        return res * a[v];
-    for (int to : adj[u])
-        dfs(to, v, res * a[u]);
+    if (operation == 1)
+    {
+    }
+    else
+    {
+    }
 }
 
 void solve_the_probelm(int test_case)
 {
-
-    cin >> n >> q;
-    for (int i = 1; i < n; i++)
-    {
-
-        cin >> u >> v;
-        if (u > v)
-            swap(u, v);
-        adj[u].push_back(v);
-    }
-
+    cin >> n >> q >> k;
     for (int i = 1; i <= n; i++)
-        cin >> a[i];
+        cin >> A[i];
+
+    XOR[1] = A[1];
+    for (int i = 2; i <= n; i++)
+        XOR[i] = XOR[i - 1] ^ A[i];
 
     // don't change
     qry.resize(q);
@@ -198,29 +190,34 @@ void solve_the_probelm(int test_case)
         cin >> l >> r, qry[i].l = l, qry[i].r = r, qry[i].idx = i, qry[i].calcOrder();
     sort(qry.begin(), qry.end());
 
-    int ans = a[1];
+    int ans = 0;
+
     int l = 1, r = 1;
 
     for (auto q : qry)
     {
         while (l > q.l)
         {
+            func(XOR[--l], 1, ans);
             // currans += add(a[--l]);
         }
         while (r < q.r)
         {
+            func(XOR[++r], 1, ans);
             // currans += add(a[++r]);
         }
         while (r > q.r)
         {
+            func(XOR[r--], -1, ans);
             // currans += remove(a[r--]);
         }
         while (l < q.l)
         {
+            func(XOR[l++], -1, ans);
             // currans += remove(a[l++]);
         }
 
-        res[q.idx] = currans;
+        res[q.idx] = ans;
     }
 
     printVector(res);
@@ -244,7 +241,7 @@ signed main()
     freopen("../output.txt", "w", stdout);
 #endif
 
-    cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
+    // cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
 
     for (int test_case = 1; test_case <= test_cases; test_case++)
         solve_the_probelm(test_case);

@@ -303,8 +303,17 @@ custom_bitset possible_subsets_knapsack(int n, const vector<int> &sizes)
 //====================================================================================================
 //====================================================================================================
 
+const int N = 505;
+
+int n;
+int A[N];
+int CSUM[N];
+
 void solve_the_probelm(int test_case)
 {
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+        cin >> A[i], CSUM[i] = CSUM[i - 1] + A[i];
 }
 
 // #define endl "\n"

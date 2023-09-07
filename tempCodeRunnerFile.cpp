@@ -1,22 +1,2 @@
 
-// int query(int x)
-// {
-//     int ans = 0;
-
-//     Trie *curr = root;
-
-//     for (int i = 30; i >= 0; i--)
-//     {
-//         int bit = (x >> i) & 1;
-//         if (curr->child[bit])
-//         {
-//             curr = curr->child[bit];
-//         }
-//         else
-//         {
-//             return ans;
-//         }
-//     }
-
-//     return ans;
-// }
+        int out = max(0ll, (i - 1) * d) - max(0ll, b - (i - 1) - 1);

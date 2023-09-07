@@ -25,6 +25,7 @@ typedef pair<int, int> pii;
 #define endl '\n'
 #define MAX 100010
 #define MOD 1000000007
+
 namespace segmentTree
 {
     LL input[MAX];

@@ -20,6 +20,21 @@ struct BIT
     {
         return query(r) - query(l - 1);
     }
+
+    // return the index of the first element >= k
+    int kth(int k)
+    {
+        int l = 0, h = size;
+        while (l < h)
+        {
+            int mid = (l + h) / 2;
+            if (query(mid) >= k)
+                h = mid;
+            else
+                l = mid + 1;
+        }
+        return l;
+    }
 };
 
 struct FenwickTreeOneBasedIndexing

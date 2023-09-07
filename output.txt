@@ -1,9 +1,6 @@
-4
-1
-5
-3
-3
-3
-1
+8
+2
+11
+1111111110
 
-Execution Time : 0.001261s 
+Execution Time : 0.001169s 
