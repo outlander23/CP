@@ -118,23 +118,47 @@ void printArray(int array[], int sz, int startIndex = 0)
 //====================================================================================================
 //====================================================================================================
 
-const int N = 2;
+const int N = 5e3 + 5;
 
 // FUA
-int A[N], B[N], C[N], D[N];
+// int A[N], B[N], C[N], D[N];
 
 // FUV
-int n, m, a, b, c, d, l, r, x, y, z, p, q, k, t, u, v, w;
+// int n, m, a, b, c, d, l, r, x, y, z, p, q, k, t, u, v, w;
 
 // FUS
 string s;
 
 // MyDefinations
 
+int A[N];
+int dp[N][N];
+vector<int> a = {0};
+
+int solve(int l, int r)
+{
+    if (l >= r)
+        return 0;
+    if (dp[l][r] != -1)
+        return dp[l][r];
+    return dp[l][r] = min({solve(l, r - 1) + 1, solve(l + 1, r) + 1, solve(l + 1, r - 1) + 1 + (INF * (a[l] != a[r]))});
+}
+
 void solve_the_problem(int test_case)
 {
-    int a = 1, b = 2;
-    print(a, b);
+
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> A[i];
+        if (a.size() and a.back() == A[i])
+            continue;
+        a.push_back(A[i]);
+    }
+    n = a.size() - 1;
+
+    print(a);
 }
 
 signed main()
@@ -148,9 +172,11 @@ signed main()
     freopen("output.txt", "w", stdout);
 #endif
 
-    cin >> test_cases;
+    // cin >> test_cases;
     for (int test_case = 1; test_case <= test_cases; test_case++)
     {
+        // cout << "Case " << test_case << ": ";
+
         solve_the_problem(test_case);
 #ifdef ONPC
         cout << "================================================================" << endln;

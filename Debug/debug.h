@@ -1,187 +1,104 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#undef _GLIBCXX_DEBUG
 
-#include <iostream>
-#include <vector>
-#include <array>
-#include <list>
-#include <deque>
-#include <set>
-#include <map>
-#include <queue>
-#include <stack>
-#include <bitset>
-#include <utility>
-#include <string>
-#include <complex>
+#include <bits/stdc++.h>
 
-// Helper function to print any type
-template <typename T>
-void print(const T &value)
+using namespace std;
+
+template <typename A, typename B>
+string to_string(pair<A, B> p);
+
+template <typename A, typename B, typename C>
+string to_string(tuple<A, B, C> p);
+
+template <typename A, typename B, typename C, typename D>
+string to_string(tuple<A, B, C, D> p);
+
+string to_string(const string &s)
 {
-    std::cout << value << " ";
+    return '"' + s + '"';
 }
 
-// Specializations for std::pair
-template <typename T1, typename T2>
-void print(const std::pair<T1, T2> &pair)
+string to_string(const char *s)
 {
-    std::cout << "(" << pair.first << ", " << pair.second << ") ";
+    return to_string((string)s);
 }
 
-// Specializations for containers
-template <typename T>
-void printContainer(const T &container)
+string to_string(bool b)
 {
-    std::cout << "[ ";
-    for (const auto &element : container)
+    return (b ? "true" : "false");
+}
+
+string to_string(vector<bool> v)
+{
+    bool first = true;
+    string res = "{";
+    for (int i = 0; i < static_cast<int>(v.size()); i++)
     {
-        print(element);
+        if (!first)
+        {
+            res += ", ";
+        }
+        first = false;
+        res += to_string(v[i]);
     }
-    std::cout << "]\n";
+    res += "}";
+    return res;
 }
 
-// Specializations for arrays
-template <typename T, std::size_t N>
-void print(const std::array<T, N> &array)
+template <size_t N>
+string to_string(bitset<N> v)
 {
-    printContainer(array);
-}
-
-template <typename T>
-void print(const std::vector<T> &vector)
-{
-    printContainer(vector);
-}
-
-template <typename T>
-void print(const std::list<T> &list)
-{
-    printContainer(list);
-}
-
-template <typename T>
-void print(const std::deque<T> &deque)
-{
-    printContainer(deque);
-}
-
-template <typename T>
-void print(const std::set<T> &set)
-{
-    printContainer(set);
-}
-
-template <typename T>
-void print(const std::multiset<T> &multiset)
-{
-    printContainer(multiset);
-}
-
-template <typename KeyType, typename ValueType>
-void print(const std::map<KeyType, ValueType> &map)
-{
-    std::cout << "{ ";
-    for (const auto &pair : map)
+    string res = "";
+    for (size_t i = 0; i < N; i++)
     {
-        print(pair.first);
-        std::cout << " -> ";
-        print(pair.second);
+        res += static_cast<char>('0' + v[i]);
     }
-    std::cout << "}\n";
+    return res;
 }
 
-template <typename KeyType, typename ValueType>
-void print(const std::multimap<KeyType, ValueType> &multimap)
+template <typename A>
+string to_string(A v)
 {
-    std::cout << "{ ";
-    for (const auto &pair : multimap)
+    bool first = true;
+    string res = "{";
+    for (const auto &x : v)
     {
-        print(pair.first);
-        std::cout << " -> ";
-        print(pair.second);
+        if (!first)
+        {
+            res += ", ";
+        }
+        first = false;
+        res += to_string(x);
     }
-    std::cout << "}\n";
+    res += "}";
+    return res;
 }
 
-// Specializations for queues
-template <typename T>
-void print(const std::queue<T> &queue)
+template <typename A, typename B>
+string to_string(pair<A, B> p)
 {
-    std::queue<T> tempQueue = queue; // Create a copy of the original queue
-    std::vector<T> elements;         // Create a vector to store the elements
-
-    while (!tempQueue.empty())
-    {
-        elements.push_back(tempQueue.front()); // Copy elements to the vector
-        tempQueue.pop();
-    }
-
-    std::cout << "Queue: ";
-    printContainer(elements); // Print the vector
+    return "(" + to_string(p.first) + ", " + to_string(p.second) + ")";
 }
 
-// Specializations for stacks
-template <typename T>
-void print(const std::stack<T> &stack)
+template <typename A, typename B, typename C>
+string to_string(tuple<A, B, C> p)
 {
-    std::stack<T> tempStack = stack; // Create a copy of the original stack
-    std::vector<T> elements;         // Create a vector to store the elements
-
-    while (!tempStack.empty())
-    {
-        elements.push_back(tempStack.top()); // Copy elements to the vector
-        tempStack.pop();
-    }
-
-    std::cout << "Stack: ";
-    printContainer(elements); // Print the vector
+    return "(" + to_string(get<0>(p)) + ", " + to_string(get<1>(p)) + ", " + to_string(get<2>(p)) + ")";
 }
-// Specializations for bitsets
-template <std::size_t N>
-void print(const std::bitset<N> &bitset)
+
+template <typename A, typename B, typename C, typename D>
+string to_string(tuple<A, B, C, D> p)
 {
-    std::cout << "[ ";
-    for (std::size_t i = 0; i < N - 1; i++)
-    {
-        std::cout << bitset[i] << ", ";
-    }
-    std::cout << bitset[N - 1] << " ]" << std::endl;
+    return "(" + to_string(get<0>(p)) + ", " + to_string(get<1>(p)) + ", " + to_string(get<2>(p)) + ", " + to_string(get<3>(p)) + ")";
 }
 
-// Specializations for strings
-void print(const std::string &str)
+void debug_out() { cerr << endl; }
+
+template <typename Head, typename... Tail>
+void debug_out(Head H, Tail... T)
 {
-    std::cout << str << std::endl;
+    cerr << " " << to_string(H);
+    debug_out(T...);
 }
 
-// Specializations for C-style strings (char*)
-void print(const char *str)
-{
-    std::cout << str << std::endl;
-}
-
-// Specializations for complex numbers
-template <typename T>
-void print(const std::complex<T> &complex)
-{
-    std::cout << "(" << complex.real() << ", " << complex.imag() << ")";
-}
-
-// Overload to print a string prefix followed by any number of arguments
-template <typename... Args>
-void printWithPrefix(const std::string &prefix, const Args &...args)
-{
-    std::cout << prefix;
-    (print(args), ...);
-    std::cout << '\n';
-}
-template <typename... Args>
-void print(const Args &...args)
-{
-
-    (print(args), ...);
-    std::cout << '\n';
-}
-
-#endif // DEBUG_H
+#define print(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)

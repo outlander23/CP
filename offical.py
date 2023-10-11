@@ -90,4 +90,15 @@ daysInMounth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 ################################################## ---START-CODING---###############################################
 
 
-print((1e6)*(1e6+1)/2 > 1e12)
+for _ in range(getInt()):
+    n = getInt()
+    a, b = zzz()
+    arr = zzz()
+
+    ans = 0
+
+    for i in range(n):
+        for j in range(i+1, n):
+            if (arr[i]+arr[j] <= b and arr[i]+arr[j] >= a):
+                ans += 1
+    print("(", _+1, ans, ")")
