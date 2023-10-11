@@ -1,5 +1,5 @@
 /* union by size */
-struct dsu
+struct DSU
 {
 
     int n;

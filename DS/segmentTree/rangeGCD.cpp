@@ -1,4 +1,3 @@
-
 class SegmentTree
 {
 private:
@@ -7,17 +6,16 @@ private:
 
     int gcd(int a, int b)
     {
-        return gcdModular(a, b);
+        return __gcd(a, b);
     }
 
 public:
-    SegmentTree(const vector<int> &arr)
+    SegmentTree(int size, const vector<int> &arr)
     {
-        n = arr.size() - 1;
-        tree.resize(4 * n); // Size for a complete binary tree
+        n = size;                 // Assign the size to the member variable n
+        tree.resize(4 * (n + 5)); // Size for a complete binary tree
         build(arr, 1, 1, n);
     }
-
     void build(const vector<int> &arr, int node, int left, int right)
     {
         if (left == right)

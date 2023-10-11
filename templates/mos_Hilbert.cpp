@@ -157,11 +157,26 @@ inline bool operator<(const Query &a, const Query &b)
 //====================================================================================================
 //====================================================================================================
 
-const int N = 1e6 + 5;
-int n, q, l, r, u, v, k;
+const int N = 5e5 + 5;
+int n, q, l, r, x, u, v, k;
 vector<Query> qry;
-
+string s;
 int A[N], CNT[N];
+
+int color[N];
+vector<int> adj[N];
+
+void dfs(int node, int parr)
+{
+    if (s[node - 1] == '1')
+        color[node] = node;
+    else
+        color[node] = color[parr];
+
+    for (int child : adj[node])
+        if (child != parr)
+            dfs(child, node);
+}
 
 void func(int val, int operation, int &ans)
 {
@@ -175,13 +190,21 @@ void func(int val, int operation, int &ans)
 
 void solve_the_probelm(int test_case)
 {
-    cin >> n >> q >> k;
-    for (int i = 1; i <= n; i++)
-        cin >> A[i];
+    cin >> n >> q;
 
-    XOR[1] = A[1];
+    for (int i = 0; i <= n; i++)
+        adj[i].clear(), color[i] = 0;
+
     for (int i = 2; i <= n; i++)
-        XOR[i] = XOR[i - 1] ^ A[i];
+    {
+        cin >> x;
+        adj[x].push_back(i);
+        adj[i].push_back(x);
+    }
+
+    cin >> s;
+
+    dfs(1, 1);
 
     // don't change
     qry.resize(q);
@@ -190,7 +213,8 @@ void solve_the_probelm(int test_case)
         cin >> l >> r, qry[i].l = l, qry[i].r = r, qry[i].idx = i, qry[i].calcOrder();
     sort(qry.begin(), qry.end());
 
-    int ans = 0;
+    int ans = 1;
+    map<int, int> cnt;
 
     int l = 1, r = 1;
 
@@ -198,22 +222,38 @@ void solve_the_probelm(int test_case)
     {
         while (l > q.l)
         {
-            func(XOR[--l], 1, ans);
+            // func(XOR[--l], 1, ans);
             // currans += add(a[--l]);
+            cnt[color[++l]]++;
+            if (cnt[color[l]] == 0)
+                ans++;
         }
         while (r < q.r)
         {
-            func(XOR[++r], 1, ans);
+            // func(XOR[++r], 1, ans);
             // currans += add(a[++r]);
+            cnt[color[++r]]++;
+            if (cnt[color[r]] == 1)
+                ans++;
         }
         while (r > q.r)
         {
-            func(XOR[r--], -1, ans);
+            cnt[color[r--]]--;
+
+            if (cnt[color[r] == 0])
+                ans--;
+
+            // func(XOR[r--], -1, ans);
             // currans += remove(a[r--]);
         }
         while (l < q.l)
         {
-            func(XOR[l++], -1, ans);
+            cnt[color[l++]]--;
+
+            if (cnt[color[l]] == 0)
+                ans--;
+
+            // func(XOR[l++], -1, ans);
             // currans += remove(a[l++]);
         }
 

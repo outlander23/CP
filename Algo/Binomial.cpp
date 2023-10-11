@@ -1,4 +1,5 @@
 
+
 class BinomialCoefficients
 {
     const int MOD;       // modulo value
@@ -46,5 +47,18 @@ public:
             return 0;
         }
         return (1LL * fact[n] * invfact[r] % MOD * invfact[n - r] % MOD);
+    }
+    int nPr(int n, int r) const
+    { // function to calculate permutations (n P r)
+        if (r < 0 || r > n)
+        {
+            return 0;
+        }
+        return (1LL * fact[n] * invfact[n - r] % MOD);
+    }
+
+    int factorial(int x)
+    { // give the factorial in moduler filed
+        return fact[x];
     }
 };

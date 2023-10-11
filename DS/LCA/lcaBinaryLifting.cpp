@@ -44,7 +44,7 @@ struct LCA
     int walk(int i, int k)
     {
         for (int j = 0; j < logN; j++)
-            if (k & (1 << j))
+            if (k & (1LL << j))
                 i = table[j][i];
         return i;
     }

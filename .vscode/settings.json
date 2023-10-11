@@ -98,8 +98,8 @@
     "**/input.txt": true,
     "**/output.txt": true,
     "**.vscode": true,
-    "**/source": true,
-    "**/*.!(cpp)": true
+    "**/offical": true,
+   
 },
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8"

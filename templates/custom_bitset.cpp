@@ -303,17 +303,40 @@ custom_bitset possible_subsets_knapsack(int n, const vector<int> &sizes)
 //====================================================================================================
 //====================================================================================================
 
-const int N = 505;
+const int N = 2e5 + 5;
 
-int n;
-int A[N];
-int CSUM[N];
+// FUA
+int A[N], B[N], C[N], D[N];
+
+// FUV
+int n, m, a, b, c, d, l, r, x, y, z, q, k, t;
+
+// FUS
+string s;
+
+// MyDefinations
 
 void solve_the_probelm(int test_case)
 {
+    int n;
     cin >> n;
+
     for (int i = 1; i <= n; i++)
-        cin >> A[i], CSUM[i] = CSUM[i - 1] + A[i];
+        cin >> A[i];
+
+    vector<int> v;
+    v.assign(A, A + n + 1);
+    custom_bitset bs = possible_subsets_knapsack(N, v);
+
+    int ans = 0;
+    vector<int> res;
+    for (int i = 1; i < N; i++)
+        if (bs.get(i))
+            ans++, res.push_back(i);
+
+    cout << ans << endl;
+
+    printVector(res);
 }
 
 // #define endl "\n"
