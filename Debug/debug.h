@@ -176,5 +176,12 @@ void printWithPrefix(const std::string &prefix, const Args &...args)
     (print(args), ...);
     std::cout << '\n';
 }
+template <typename... Args>
+void print(const Args &...args)
+{
+
+    (print(args), ...);
+    std::cout << '\n';
+}
 
 #endif // DEBUG_H

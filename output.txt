@@ -1,10 +1,4 @@
-3.14 Hello, World!
-[ 1 2 3 4 5 ]
-[ apple banana cherry ]
-[ 1.1 2.2 3.3 4.4 ]
-{ One  -> 1 Three  -> 3 Two  -> 2 }
-(2, 3)C-style string [ 0, 1, 0, 1, 0, 1, 0, 1 ]
-[ 2 5 6 ]
-Queue: [ 2 3 ]
+
+1 2 
 ================================================================
-Execution Time : 0.001221s
+Execution Time : 0.001119s
