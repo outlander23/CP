@@ -91,14 +91,14 @@ daysInMounth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 for _ in range(getInt()):
-    n = getInt()
-    a, b = zzz()
-    arr = zzz()
+    a, b, c = szzz()
 
-    ans = 0
+    b -= a
+    b -= a
 
-    for i in range(n):
-        for j in range(i+1, n):
-            if (arr[i]+arr[j] <= b and arr[i]+arr[j] >= a):
-                ans += 1
-    print("(", _+1, ans, ")")
+    c -= a
+
+    if (a == b and b == c and a == c):
+        print("YES")
+    else:
+        print("NO")

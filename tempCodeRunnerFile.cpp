@@ -1,2 +1,2 @@
-#else
-// #define print(...) 42
+
+    for (int i = 0; i < n; i++)
