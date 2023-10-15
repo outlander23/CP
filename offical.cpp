@@ -37,12 +37,15 @@ typedef tree<pair<int, int>, null_type,
     ordered_set_pair;
 
 int test_cases = 1;
-const int INF = 1e18;        // infinity
-const int mod = 1e9 + 7;     // mod
+const int INF = 1e18;    // infinity
+const int mod = 1e9 + 7; // mod
+
 const int base1 = 972663749; // base1
 const int base2 = 998244353; // base2
-const int mod1 = 1e9 + 7;    // mod1
-const int mod2 = 1e9 + 9;    // mod2
+
+const int mod1 = 1e9 + 7; // mod1
+const int mod2 = 1e9 + 9; // mod2
+
 const double pi = 4 * atan(1);
 
 vector<int> dx = {-1, +1, +0, +0, +1, -1, +1, -1};
@@ -121,7 +124,7 @@ void printArray(int array[], int sz, int startIndex = 0)
 const int N = 2e5 + 5;
 
 // FUA
-int A[N], B[N], C[N], D[N];
+// int A[N], B[N], C[N], D[N];
 
 // FUV
 int n, m, a, b, c, d, l, r, x, y, z, p, q, k, t, u, v, w;
@@ -131,369 +134,144 @@ string s;
 
 // MyDefinations
 
-using i64 = long long;
-template <class T>
-constexpr T power(T a, i64 b)
+vector<int> prefix_function(string const &s)
 {
-    T res = 1;
-    for (; b; b /= 2, a *= a)
+    int n = (int)s.length();
+    vector<int> pi(n);
+    for (int i = 1; i < n; i++)
     {
-        if (b % 2)
-        {
-            res *= a;
-        }
+        int j = pi[i - 1];
+        while (j > 0 && s[i] != s[j])
+            j = pi[j - 1];
+        if (s[i] == s[j])
+            j++;
+        pi[i] = j;
     }
-    return res;
+    return pi;
 }
 
-constexpr i64 mul(i64 a, i64 b, i64 p)
+vector<int> z_function(string const &s)
 {
-    i64 res = a * b - i64(1.L * a * b / p) * p;
-    res %= p;
-    if (res < 0)
+    int n = s.size();
+    vector<int> z(n);
+    int l = 0, r = 0;
+    for (int i = 1; i < n; i++)
     {
-        res += p;
+        if (i < r)
+        {
+            z[i] = min(r - i, z[i - l]);
+        }
+        while (i + z[i] < n && s[z[i]] == s[i + z[i]])
+        {
+            z[i]++;
+        }
+        if (i + z[i] > r)
+        {
+            l = i;
+            r = i + z[i];
+        }
     }
-    return res;
+    return z;
 }
-template <i64 P>
-struct MLong
-{
-    i64 x;
-    constexpr MLong() : x{} {}
-    constexpr MLong(i64 x) : x{norm(x % getMod())} {}
 
-    static i64 Mod;
-    constexpr static i64 getMod()
+class PolynomialHashing
+{
+    int base, mod;
+    vector<int> power, hash;
+
+public:
+    PolynomialHashing(int base = 181, int mod = 1e9 + 7) : base(base), mod(mod)
     {
-        if (P > 0)
-        {
-            return P;
-        }
-        else
-        {
-            return Mod;
-        }
+        power.push_back(1);
+        hash.push_back(0);
     }
-    constexpr static void setMod(i64 Mod_)
+    void add_string(string &s)
     {
-        Mod = Mod_;
+        for (auto c : s)
+            add(c);
     }
-    constexpr i64 norm(i64 x) const
+    void add(int c)
     {
-        if (x < 0)
-        {
-            x += getMod();
-        }
-        if (x >= getMod())
-        {
-            x -= getMod();
-        }
-        return x;
+        hash.push_back(((hash.back() * base) % mod + c) % mod);
+        power.push_back((power.back() * base) % mod);
     }
-    constexpr i64 val() const
+    int hashvalue()
     {
-        return x;
+        return hash.back();
     }
-    explicit constexpr operator i64() const
+    int changeInPos(int pos, int c)
     {
-        return x;
+        int old = hash.back();
+        int posChar = (get(pos, pos) * power[power.size() - pos - 1]) % mod;
+        old -= posChar;
+        if (old < 0)
+            old += mod;
+        old = (old + (c * power[power.size() - pos - 1]) % mod) % mod;
+        return old;
     }
-    constexpr MLong operator-() const
+    int get(int l, int r)
     {
-        MLong res;
-        res.x = norm(getMod() - x);
-        return res;
+        return (hash[r] - hash[l - 1] * power[r - l + 1] % mod + mod) % mod;
     }
-    constexpr MLong inv() const
+    int getpower(int n)
     {
-        assert(x != 0);
-        return power(*this, getMod() - 2);
+        return power[n];
     }
-    constexpr MLong &operator*=(MLong rhs) &
+    void clear()
     {
-        x = mul(x, rhs.x, getMod());
-        return *this;
-    }
-    constexpr MLong &operator+=(MLong rhs) &
-    {
-        x = norm(x + rhs.x);
-        return *this;
-    }
-    constexpr MLong &operator-=(MLong rhs) &
-    {
-        x = norm(x - rhs.x);
-        return *this;
-    }
-    constexpr MLong &operator/=(MLong rhs) &
-    {
-        return *this *= rhs.inv();
-    }
-    friend constexpr MLong operator*(MLong lhs, MLong rhs)
-    {
-        MLong res = lhs;
-        res *= rhs;
-        return res;
-    }
-    friend constexpr MLong operator+(MLong lhs, MLong rhs)
-    {
-        MLong res = lhs;
-        res += rhs;
-        return res;
-    }
-    friend constexpr MLong operator-(MLong lhs, MLong rhs)
-    {
-        MLong res = lhs;
-        res -= rhs;
-        return res;
-    }
-    friend constexpr MLong operator/(MLong lhs, MLong rhs)
-    {
-        MLong res = lhs;
-        res /= rhs;
-        return res;
-    }
-    friend constexpr std::istream &operator>>(std::istream &is, MLong &a)
-    {
-        i64 v;
-        is >> v;
-        a = MLong(v);
-        return is;
-    }
-    friend constexpr std::ostream &operator<<(std::ostream &os, const MLong &a)
-    {
-        return os << a.val();
-    }
-    friend constexpr bool operator==(MLong lhs, MLong rhs)
-    {
-        return lhs.val() == rhs.val();
-    }
-    friend constexpr bool operator!=(MLong lhs, MLong rhs)
-    {
-        return lhs.val() != rhs.val();
+        power.clear();
+        hash.clear();
+        power.push_back(1);
+        hash.push_back(0);
     }
 };
+// PolynomialHashing h1(base1, mod1), h2(base2, mod2);
 
-template <>
-i64 MLong<0LL>::Mod = i64(1E18) + 9;
-
-template <int P>
-struct MInt
-{
-    int x;
-    constexpr MInt() : x{} {}
-    constexpr MInt(i64 x) : x{norm(x % getMod())} {}
-
-    static int Mod;
-    constexpr static int getMod()
-    {
-        if (P > 0)
-        {
-            return P;
-        }
-        else
-        {
-            return Mod;
-        }
-    }
-    constexpr static void setMod(int Mod_)
-    {
-        Mod = Mod_;
-    }
-    constexpr int norm(int x) const
-    {
-        if (x < 0)
-        {
-            x += getMod();
-        }
-        if (x >= getMod())
-        {
-            x -= getMod();
-        }
-        return x;
-    }
-    constexpr int val() const
-    {
-        return x;
-    }
-    explicit constexpr operator int() const
-    {
-        return x;
-    }
-    constexpr MInt operator-() const
-    {
-        MInt res;
-        res.x = norm(getMod() - x);
-        return res;
-    }
-    constexpr MInt inv() const
-    {
-        assert(x != 0);
-        return power(*this, getMod() - 2);
-    }
-    constexpr MInt &operator*=(MInt rhs) &
-    {
-        x = 1LL * x * rhs.x % getMod();
-        return *this;
-    }
-    constexpr MInt &operator+=(MInt rhs) &
-    {
-        x = norm(x + rhs.x);
-        return *this;
-    }
-    constexpr MInt &operator-=(MInt rhs) &
-    {
-        x = norm(x - rhs.x);
-        return *this;
-    }
-    constexpr MInt &operator/=(MInt rhs) &
-    {
-        return *this *= rhs.inv();
-    }
-    friend constexpr MInt operator*(MInt lhs, MInt rhs)
-    {
-        MInt res = lhs;
-        res *= rhs;
-        return res;
-    }
-    friend constexpr MInt operator+(MInt lhs, MInt rhs)
-    {
-        MInt res = lhs;
-        res += rhs;
-        return res;
-    }
-    friend constexpr MInt operator-(MInt lhs, MInt rhs)
-    {
-        MInt res = lhs;
-        res -= rhs;
-        return res;
-    }
-    friend constexpr MInt operator/(MInt lhs, MInt rhs)
-    {
-        MInt res = lhs;
-        res /= rhs;
-        return res;
-    }
-    friend constexpr std::istream &operator>>(std::istream &is, MInt &a)
-    {
-        i64 v;
-        is >> v;
-        a = MInt(v);
-        return is;
-    }
-    friend constexpr std::ostream &operator<<(std::ostream &os, const MInt &a)
-    {
-        return os << a.val();
-    }
-    friend constexpr bool operator==(MInt lhs, MInt rhs)
-    {
-        return lhs.val() == rhs.val();
-    }
-    friend constexpr bool operator!=(MInt lhs, MInt rhs)
-    {
-        return lhs.val() != rhs.val();
-    }
-};
-
-template <>
-int MInt<0>::Mod = 998244353;
-
-template <int V, int P>
-constexpr MInt<P> CInv = MInt<P>(V).inv();
-
-constexpr int P = 998244353;
-using Z = MInt<P>;
-
-struct Comb
-{
-    int n;
-    std::vector<Z> _fac;
-    std::vector<Z> _invfac;
-    std::vector<Z> _inv;
-
-    Comb() : n{0}, _fac{1}, _invfac{1}, _inv{0} {}
-    Comb(int n) : Comb()
-    {
-        init(n);
-    }
-
-    void init(int m)
-    {
-        m = std::min(m, Z::getMod() - 1);
-        if (m <= n)
-            return;
-        _fac.resize(m + 1);
-        _invfac.resize(m + 1);
-        _inv.resize(m + 1);
-
-        for (int i = n + 1; i <= m; i++)
-        {
-            _fac[i] = _fac[i - 1] * i;
-        }
-        _invfac[m] = _fac[m].inv();
-        for (int i = m; i > n; i--)
-        {
-            _invfac[i - 1] = _invfac[i] * i;
-            _inv[i] = _invfac[i] * _fac[i - 1];
-        }
-        n = m;
-    }
-
-    Z fac(int m)
-    {
-        if (m > n)
-            init(2 * m);
-        return _fac[m];
-    }
-    Z invfac(int m)
-    {
-        if (m > n)
-            init(2 * m);
-        return _invfac[m];
-    }
-    Z inv(int m)
-    {
-        if (m > n)
-            init(2 * m);
-        return _inv[m];
-    }
-    Z binom(int n, int m)
-    {
-        if (n < m || m < 0)
-            return 0;
-        return fac(n) * invfac(m) * invfac(n - m);
-    }
-} comb;
+// bool is_possilbe(int sz)
+// {
+//     return (h1.get(1, 1 + sz - 1) == h1.get(n - sz + 1, n)) and h2.get(1, 1 + sz - 1) == h2.get(n - sz + 1, n);
+// }
 
 void solve_the_problem(int test_case)
 {
-    cin >> n;
-    for (int i = 1; i <= n; i++)
-        cin >> A[i];
+    cin >> s;
+    n = s.size();
+    vector<int> z = z_function(s);
+    vector<int> pi = prefix_function(s);
 
-    for (int i = 1; i <= n; i++)
-        for (int j = i; j <= n; j += i)
-            B[i] = max(B[i], A[j]);
-    vector<pair<int, int>> ans;
-    for (int i = 1; i <= n; i++)
-        ans.push_back({B[i], i});
+    // h1.add_string(s);
+    // h2.add_string(s);
 
-    sort(ans.begin(), ans.end());
-    reverse(ans.begin(), ans.end());
+    print(z);
+    print(pi);
 
-    Z res = 0;
-    Z curr = modpower(2, n - 1, base2);
-    for (auto [x, y] : ans)
-    {
-        res += (x * curr);
-        curr /= 2;
-    }
+    int ans = 1;
+    for (int i = n - 1; i >= 0; i--)
+        if (i + z[i] == n)
+            ans++;
 
-    cout << res << endl;
+    vector<int> csum(n + 1, 0);
+    for (int i = 0; i < n; i++)
+        csum[z[i]]++;
+    print(csum);
+
+    for (int i = s.size() - 1; i >= 1; i--)
+        csum[i] += csum[i + 1];
+    print(csum);
+
+    print(z);
+
+    cout << ans << endl;
+    int index = 1;
+    for (int i = n - 1; i >= 0; i--, index++)
+        if (i + z[i] == n)
+            cout << index << " " << csum[index] + 1 << endl;
+    cout << n << " " << 1 << endl;
 }
 
 signed main()
 {
+
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
@@ -507,7 +285,6 @@ signed main()
     for (int test_case = 1; test_case <= test_cases; test_case++)
     {
         // cout << "Case " << test_case << ": ";
-
         solve_the_problem(test_case);
 #ifdef ONPC
         cout << "================================================================" << endln;

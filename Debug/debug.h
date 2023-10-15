@@ -22,12 +22,32 @@ string to_string(const char *s)
 {
     return to_string((string)s);
 }
-
+template <typename A>
+string to_string(A *v)
+{
+    return to_string(*v);
+}
 string to_string(bool b)
 {
     return (b ? "true" : "false");
 }
-
+template <typename A>
+string to_string(A b[], int size)
+{
+    bool first = true;
+    string res = "{";
+    for (int i = 0; i < size; i++)
+    {
+        if (!first)
+        {
+            res += ", ";
+        }
+        first = false;
+        res += to_string(b[i]);
+    }
+    res += "}";
+    return res;
+}
 string to_string(vector<bool> v)
 {
     bool first = true;

@@ -321,22 +321,19 @@ void solve_the_probelm(int test_case)
     int n;
     cin >> n;
 
+    int sum = 0;
     for (int i = 1; i <= n; i++)
-        cin >> A[i];
+        cin >> A[i], sum += A[i];
 
     vector<int> v;
     v.assign(A, A + n + 1);
-    custom_bitset bs = possible_subsets_knapsack(N, v);
 
-    int ans = 0;
-    vector<int> res;
-    for (int i = 1; i < N; i++)
-        if (bs.get(i))
-            ans++, res.push_back(i);
+    if (sum % 2)
+    {
 
-    cout << ans << endl;
-
-    printVector(res);
+        cout << "NO" << endl;
+        return;
+    }
 }
 
 // #define endl "\n"

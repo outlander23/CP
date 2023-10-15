@@ -74,3 +74,5 @@ struct DynamicMaxSubarraySum
         return query(1, 1, N, pos, pos);
     }
 };
+
+// max subarray sum with point update
