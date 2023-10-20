@@ -10,8 +10,18 @@
 using namespace std;
 using namespace __gnu_pbds;
 
+#define endln "\n"
 #define EPSILON 1e-12
 #define int long long
+#define front_zero(n) __builtin_clzll(n)
+#define back_zero(n) __builtin_ctzll(n)
+#define total_one(n) __builtin_popcountll(n)
+
+#ifdef ONPC
+#include "../Debug/debug.h"
+#else
+#define print(...) 42
+#endif
 
 #define MULTI  \
     int _T;    \
@@ -234,31 +244,43 @@ struct custom_bitset
 
 find max{subset_sum} <= target
 complexity: O(sum * sqrt(sum) / 64)
+find the max sum the can be build less then target
+becarefull or use other funciton
+
+some update was made
 
 */
 
-int knapsack(int target, vector<int> &v)
+int maxsubsetsum_knapsack(int target, vector<int> &sizes)
 {
-    int hi = target;
-    std::vector<int> freq(hi + 1);
-    for (int &u : v)
-        freq[u]++;
-    custom_bitset bset(hi + 1);
-    bset.set(0, 1);
-    for (int i = 1; i <= hi; i++)
+
+    int n = target;
+    vector<int> freq(n + 1, 0);
+
+    for (int s : sizes)
+        if (1 <= s && s <= n)
+            freq[s]++;
+
+    custom_bitset knapsack(n + 1);
+    knapsack.set(0, 1);
+
+    for (int s = 1; s <= n; s++)
     {
-        if (freq[i] >= 3)
-        { // we can just keep one instance
-            int next = (freq[i] - 1) / 2;
-            if (i + i <= hi)
-                freq[i + i] += next;
-            freq[i] -= next + next;
+        if (freq[s] >= 3)
+        {
+            int move = (freq[s] - 1) / 2;
+            freq[s] -= 2 * move;
+
+            if (2 * s <= n)
+                freq[2 * s] += move;
         }
-        while (freq[i]--)
-            bset.or_shift(i);
+
+        for (int r = 0; r < freq[s]; r++)
+            knapsack.or_shift(s);
     }
-    for (int i = hi; i >= 0; i--)
-        if (bset.get(i))
+
+    for (int i = target; i >= 0; i--)
+        if (knapsack.get(i))
             return i;
     return -1;
 }
@@ -270,8 +292,9 @@ Runs in O(n sqrt n / 64) if
 the sum of sizes is bounded by n, and O(n^2 / 64) otherwise.
 
 */
-custom_bitset possible_subsets_knapsack(int n, const vector<int> &sizes)
+custom_bitset possible_subsets_knapsack(int target, const vector<int> &sizes)
 {
+    int n = target;
     vector<int> freq(n + 1, 0);
 
     for (int s : sizes)
@@ -303,7 +326,7 @@ custom_bitset possible_subsets_knapsack(int n, const vector<int> &sizes)
 //====================================================================================================
 //====================================================================================================
 
-const int N = 2e5 + 5;
+const int N = 4e3 + 5;
 
 // FUA
 int A[N], B[N], C[N], D[N];
@@ -318,21 +341,36 @@ string s;
 
 void solve_the_probelm(int test_case)
 {
-    int n;
+
     cin >> n;
+    for (int i = 1; i <= 2 * n; i++)
+        cin >> A[i];
 
-    int sum = 0;
-    for (int i = 1; i <= n; i++)
-        cin >> A[i], sum += A[i];
-
-    vector<int> v;
-    v.assign(A, A + n + 1);
-
-    if (sum % 2)
+    vector<int> lst;
+    int cnt = 1;
+    int mx = A[cnt];
+    for (int i = 2; i <= 2 * n; i++)
     {
+        if (A[i] <= mx)
+            cnt++;
+        else
+        {
+            lst.push_back(cnt);
+            cnt = 1;
+            mx = A[i];
+        }
+    }
 
+    lst.push_back(cnt);
+
+    int bs = maxsubsetsum_knapsack(n, lst);
+    if (bs == n)
+    {
+        cout << "YES" << endl;
+    }
+    else
+    {
         cout << "NO" << endl;
-        return;
     }
 }
 
@@ -354,7 +392,7 @@ signed main()
     freopen("../output.txt", "w", stdout);
 #endif
 
-    // cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
+    cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
 
     for (int test_case = 1; test_case <= test_cases; test_case++)
         solve_the_probelm(test_case);
