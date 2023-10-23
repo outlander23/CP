@@ -89,12 +89,7 @@ int lcm(int x1, int x2)
 {
     return ((x1 * x2) / __gcd(x1, x2));
 }
-int bitCount(unsigned int u)
-{
-    unsigned int uCount;
-    uCount = u - ((u >> 1) & 033333333333) - ((u >> 2) & 011111111111);
-    return ((uCount + (uCount >> 3)) & 030707070707) % 63;
-}
+
 void printVector(vector<int> &array, int startIndex = 0)
 {
     int sz = array.size();
@@ -121,7 +116,7 @@ void printArray(int array[], int sz, int startIndex = 0)
 //====================================================================================================
 //====================================================================================================
 
-const int N = 2e5 + 5;
+// const int N = 1e5 + 5;
 
 // FUA
 // int A[N], B[N], C[N], D[N];
@@ -134,139 +129,97 @@ string s;
 
 // MyDefinations
 
-vector<int> prefix_function(string const &s)
-{
-    int n = (int)s.length();
-    vector<int> pi(n);
-    for (int i = 1; i < n; i++)
-    {
-        int j = pi[i - 1];
-        while (j > 0 && s[i] != s[j])
-            j = pi[j - 1];
-        if (s[i] == s[j])
-            j++;
-        pi[i] = j;
-    }
-    return pi;
-}
-
-vector<int> z_function(string const &s)
-{
-    int n = s.size();
-    vector<int> z(n);
-    int l = 0, r = 0;
-    for (int i = 1; i < n; i++)
-    {
-        if (i < r)
-        {
-            z[i] = min(r - i, z[i - l]);
-        }
-        while (i + z[i] < n && s[z[i]] == s[i + z[i]])
-        {
-            z[i]++;
-        }
-        if (i + z[i] > r)
-        {
-            l = i;
-            r = i + z[i];
-        }
-    }
-    return z;
-}
-
-class PolynomialHashing
-{
-    int base, mod;
-    vector<int> power, hash;
-
-public:
-    PolynomialHashing(int base = 181, int mod = 1e9 + 7) : base(base), mod(mod)
-    {
-        power.push_back(1);
-        hash.push_back(0);
-    }
-    void add_string(string &s)
-    {
-        for (auto c : s)
-            add(c);
-    }
-    void add(int c)
-    {
-        hash.push_back(((hash.back() * base) % mod + c) % mod);
-        power.push_back((power.back() * base) % mod);
-    }
-    int hashvalue()
-    {
-        return hash.back();
-    }
-    int changeInPos(int pos, int c)
-    {
-        int old = hash.back();
-        int posChar = (get(pos, pos) * power[power.size() - pos - 1]) % mod;
-        old -= posChar;
-        if (old < 0)
-            old += mod;
-        old = (old + (c * power[power.size() - pos - 1]) % mod) % mod;
-        return old;
-    }
-    int get(int l, int r)
-    {
-        return (hash[r] - hash[l - 1] * power[r - l + 1] % mod + mod) % mod;
-    }
-    int getpower(int n)
-    {
-        return power[n];
-    }
-    void clear()
-    {
-        power.clear();
-        hash.clear();
-        power.push_back(1);
-        hash.push_back(0);
-    }
-};
-// PolynomialHashing h1(base1, mod1), h2(base2, mod2);
-
-// bool is_possilbe(int sz)
-// {
-//     return (h1.get(1, 1 + sz - 1) == h1.get(n - sz + 1, n)) and h2.get(1, 1 + sz - 1) == h2.get(n - sz + 1, n);
-// }
-
 void solve_the_problem(int test_case)
 {
-    cin >> s;
-    n = s.size();
-    vector<int> z = z_function(s);
-    vector<int> pi = prefix_function(s);
+    int n, m, i, j, l, r, x, id, ans;
+    cin >> n >> m;
 
-    // h1.add_string(s);
-    // h2.add_string(s);
+    vector<pair<int, int>> a(n);
+    set<int> st;
+    for (i = 0; i < n; ++i)
+    {
+        cin >> l >> r;
+        st.insert(l);
+        st.insert(r);
+        a[i] = {l, r};
+    }
+    sort(a.begin(), a.end());
 
-    print(z);
-    print(pi);
+    x = 1;
+    for (i = 0; i < n; ++i)
+    {
+        tie(l, r) = a[i];
+        if (l > x)
+            break;
+        x = max(x, r + 1);
+    }
 
-    int ans = 1;
-    for (int i = n - 1; i >= 0; i--)
-        if (i + z[i] == n)
-            ans++;
+    map<int, int> mp;
+    id = 0;
+    for (int z : st)
+    {
+        if (mp.find(z) == mp.end())
+            mp[z] = id++;
+    }
+    for (i = 0; i < n; ++i)
+    {
+        tie(l, r) = a[i];
+        a[i] = {mp[l], mp[r]};
+    }
 
-    vector<int> csum(n + 1, 0);
-    for (int i = 0; i < n; i++)
-        csum[z[i]]++;
-    print(csum);
+    segtreemax<max_t> seg;
+    seg.init(id + 1);
+    for (i = 0; i < n; ++i)
+    {
+        tie(l, r) = a[i];
+        seg.update(l + 1, r + 1, 1);
+    }
 
-    for (int i = s.size() - 1; i >= 1; i--)
-        csum[i] += csum[i + 1];
-    print(csum);
+    ans = 0;
+    int pp = 1;
+    int qq = id - 1 + 1;
+    if (x <= m)
+    {
+        ans = seg.query(pp, qq).val;
+    }
+    else
+    {
+        x = INF;
+        for (i = 0; i < id; ++i)
+        {
+            x = min(x, seg.query(i + 1, i + 1).val);
+        }
+        ans = seg.query(pp, qq).val - x;
 
-    print(z);
+        set<pair<int, int>> taken;
+        j = 0;
+        for (i = 0; i < id; ++i)
+        {
+            for (j = j; j < n; ++j)
+            {
+                tie(l, r) = a[j];
+                if (l != i)
+                    break;
+                taken.insert({r, l});
+                seg.update(l + 1, r + 1, -1);
+            }
 
-    cout << ans << endl;
-    int index = 1;
-    for (int i = n - 1; i >= 0; i--, index++)
-        if (i + z[i] == n)
-            cout << index << " " << csum[index] + 1 << endl;
-    cout << n << " " << 1 << endl;
+            ans = max(ans, seg.query(pp, qq).val - seg.query(i + 1, i + 1).val);
+            while (!taken.empty())
+            {
+                tie(r, l) = *taken.begin();
+                if (r == i)
+                {
+                    seg.update(l + 1, r + 1, 1);
+                    taken.erase(taken.begin());
+                }
+                else
+                    break;
+            }
+        }
+    }
+
+    cout << ans << "\n";
 }
 
 signed main()
@@ -281,17 +234,17 @@ signed main()
     freopen("output.txt", "w", stdout);
 #endif
 
-    // cin >> test_cases;
+    cin >> test_cases;
     for (int test_case = 1; test_case <= test_cases; test_case++)
     {
-        // cout << "Case " << test_case << ": ";
+        // cout << "Case #" << test_case << ": ";
         solve_the_problem(test_case);
 #ifdef ONPC
-        cout << "================================================================" << endln;
+        // cout << "================================================================" << endln;
 #endif
     }
 #ifdef ONPC
-    cout << "Execution Time : " << 1.0 * clock() / CLOCKS_PER_SEC << "s";
+    // cout << "Execution Time : " << 1.0 * clock() / CLOCKS_PER_SEC << "s";
 #endif
 
     return 0;

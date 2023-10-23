@@ -1,7 +1,8 @@
 // #pragma GCC optimize "fast-math"
 // #pragma GCC optimize("O3,unroll-loops")
 // #pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
-#pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
+// #pragma GCC target("sse,sse2,sse3,ssse3,sse4,popcnt,abm,mmx,avx,avx2,fma")
+
 #pragma GCC diagnostic ignored "-Wunused-variable"
 
 #include "bits/stdc++.h"
@@ -342,36 +343,32 @@ string s;
 void solve_the_probelm(int test_case)
 {
 
-    cin >> n;
-    for (int i = 1; i <= 2 * n; i++)
-        cin >> A[i];
+    cin >> a >> b;
+    b += a;
+    int sum = (b * (b - 1) / 2) - (a * (a - 1) / 2);
 
-    vector<int> lst;
-    int cnt = 1;
-    int mx = A[cnt];
-    for (int i = 2; i <= 2 * n; i++)
-    {
-        if (A[i] <= mx)
-            cnt++;
-        else
+    vector<int> factors;
+    for (int i = 2; i * i <= sum; i++)
+        if (sum % i == 0)
         {
-            lst.push_back(cnt);
-            cnt = 1;
-            mx = A[i];
+            factors.push_back(i);
+            if (sum / i != i)
+                factors.push_back(sum / i);
         }
-    }
+    print(sum);
+    int ans = 1;
+    vector<int> v;
 
-    lst.push_back(cnt);
+    for (int i = a; i <= b; i++)
+        v.push_back(i);
 
-    int bs = maxsubsetsum_knapsack(n, lst);
-    if (bs == n)
-    {
-        cout << "YES" << endl;
-    }
-    else
-    {
-        cout << "NO" << endl;
-    }
+    custom_bitset bs = possible_subsets_knapsack(sum, v);
+
+    for (int x : factors)
+        if (bs.get(x))
+            ans = max(ans, x);
+
+    cout << ans << endl;
 }
 
 // #define endl "\n"
