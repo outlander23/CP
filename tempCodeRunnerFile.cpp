@@ -1,2 +1,2 @@
-    int pp = 1;
-    int qq = id - 1 + 1;
+        seg[2][node] = 1;
+        seg[3][node] = 1;

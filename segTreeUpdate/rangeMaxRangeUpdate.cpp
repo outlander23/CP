@@ -111,11 +111,13 @@ struct max_t
 };
 
 /*
-
+100% working
 one base indexing is done
 segtreemax<max_t> seg;
 seg.init(mxsz);
 see the code for better understanding
 https://codeforces.com/contest/1884/submission/229399754
+
+time: O(nlog(n))
 
 */

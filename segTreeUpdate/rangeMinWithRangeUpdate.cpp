@@ -111,6 +111,7 @@ struct min_t
 };
 
 /*
+100% working
 one base indexing is done
 segtreemin<min_t> seg;
 seg.init(mxsz);

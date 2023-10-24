@@ -116,7 +116,7 @@ void printArray(int array[], int sz, int startIndex = 0)
 //====================================================================================================
 //====================================================================================================
 
-// const int N = 1e5 + 5;
+const int N = 400005;
 
 // FUA
 // int A[N], B[N], C[N], D[N];
@@ -128,98 +128,140 @@ int n, m, a, b, c, d, l, r, x, y, z, p, q, k, t, u, v, w;
 string s;
 
 // MyDefinations
+struct my_data
+{
+    int val;
+
+    my_data(int _val = 0) : val(_val) {}
+
+    my_data operator+(const my_data &other) const
+    {
+        return my_data(val + other.val);
+    }
+
+    operator int() const
+    {
+        return val;
+    }
+};
+
+template <typename num_t>
+struct segtree
+{
+    vector<num_t> s;
+    vector<num_t> a;
+    vector<int> lazy;
+    int n;
+
+    void init(int _n)
+    {
+        n = _n;
+        a.assign(n + 5, num_t(0));
+        s.resize(4 * (n + 5), num_t(0));
+        lazy.assign(4 * (n + 5), -1);
+        build(1, n);
+    }
+
+    void build(int l, int r, int u = 1)
+    {
+        if (l == r)
+            return;
+        int m = l + r >> 1;
+        build(l, m, u * 2);
+        build(m + 1, r, u * 2 + 1);
+        s[u] = s[u * 2] + s[u * 2 + 1];
+    }
+
+    void push(int u, int d, int l, int r)
+    {
+        s[u] = num_t(d * (r - l + 1));
+        lazy[u] = d;
+    }
+
+    void push(int u, int l, int r)
+    {
+        if (~lazy[u])
+        {
+            int m = l + r >> 1;
+            push(u * 2, lazy[u], l, m);
+            push(u * 2 + 1, lazy[u], m + 1, r);
+            lazy[u] = -1;
+        }
+    }
+
+    void update(int l, int r, int d, int ul, int ur, int u)
+    {
+        if (ul >= l && ur <= r)
+        {
+            push(u, d, ul, ur);
+            return;
+        }
+        push(u, ul, ur);
+        int m = ul + ur >> 1;
+        if (l <= m)
+            update(l, r, d, ul, m, u * 2);
+        if (r > m)
+            update(l, r, d, m + 1, ur, u * 2 + 1);
+        s[u] = s[u * 2] + s[u * 2 + 1];
+    }
+
+    void update(int l, int r, int d)
+    {
+        update(l, r, d, 1, n, 1);
+    }
+
+    num_t query(int l, int r, int ul, int ur, int u)
+    {
+        if (ul >= l && ur <= r)
+        {
+            return s[u];
+        }
+        push(u, ul, ur);
+        int m = ul + ur >> 1;
+        if (r <= m)
+            return query(l, r, ul, m, u * 2);
+        if (l > m)
+            return query(l, r, m + 1, ur, u * 2 + 1);
+        return query(l, r, ul, m, u * 2) + query(l, r, m + 1, ur, u * 2 + 1);
+    }
+
+    num_t query(int l, int r)
+    {
+        return query(l, r, 1, n, 1);
+    }
+};
+
+/*
+100% working
+one base indexing is done
+segtreesum<min_t> seg;
+seg.init(mxsz);
+see the code for better understanding
+https://codeforces.com/contest/240/submission/229534043
+*/
 
 void solve_the_problem(int test_case)
 {
-    int n, m, i, j, l, r, x, id, ans;
     cin >> n >> m;
+    segtree<my_data> seg;
+    seg.init(n);
 
-    vector<pair<int, int>> a(n);
-    set<int> st;
-    for (i = 0; i < n; ++i)
+    vector<int> a(n + 1);
+    for (int i = 1; i <= n; i++)
+        cin >> a[i], seg.update(i, i, a[i]);
+
+    cout << (seg.query(1, n)) << endl;
+    while (m--)
     {
-        cin >> l >> r;
-        st.insert(l);
-        st.insert(r);
-        a[i] = {l, r};
-    }
-    sort(a.begin(), a.end());
+        cin >> l >> r >> x;
 
-    x = 1;
-    for (i = 0; i < n; ++i)
-    {
-        tie(l, r) = a[i];
-        if (l > x)
-            break;
-        x = max(x, r + 1);
-    }
+        for (int i = l; i <= r; i++)
+            a[i] = x;
 
-    map<int, int> mp;
-    id = 0;
-    for (int z : st)
-    {
-        if (mp.find(z) == mp.end())
-            mp[z] = id++;
+        print(a);
+        seg.update(l, r, x);
+        cout << (seg.query(1, n).val) << endl;
     }
-    for (i = 0; i < n; ++i)
-    {
-        tie(l, r) = a[i];
-        a[i] = {mp[l], mp[r]};
-    }
-
-    segtreemax<max_t> seg;
-    seg.init(id + 1);
-    for (i = 0; i < n; ++i)
-    {
-        tie(l, r) = a[i];
-        seg.update(l + 1, r + 1, 1);
-    }
-
-    ans = 0;
-    int pp = 1;
-    int qq = id - 1 + 1;
-    if (x <= m)
-    {
-        ans = seg.query(pp, qq).val;
-    }
-    else
-    {
-        x = INF;
-        for (i = 0; i < id; ++i)
-        {
-            x = min(x, seg.query(i + 1, i + 1).val);
-        }
-        ans = seg.query(pp, qq).val - x;
-
-        set<pair<int, int>> taken;
-        j = 0;
-        for (i = 0; i < id; ++i)
-        {
-            for (j = j; j < n; ++j)
-            {
-                tie(l, r) = a[j];
-                if (l != i)
-                    break;
-                taken.insert({r, l});
-                seg.update(l + 1, r + 1, -1);
-            }
-
-            ans = max(ans, seg.query(pp, qq).val - seg.query(i + 1, i + 1).val);
-            while (!taken.empty())
-            {
-                tie(r, l) = *taken.begin();
-                if (r == i)
-                {
-                    seg.update(l + 1, r + 1, 1);
-                    taken.erase(taken.begin());
-                }
-                else
-                    break;
-            }
-        }
-    }
-
-    cout << ans << "\n";
 }
 
 signed main()
@@ -229,12 +271,12 @@ signed main()
     cin.tie(0);
     cout.tie(0);
 
-#ifdef ONPC
+    // #ifdef ONPC
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
-#endif
+    // #endif
 
-    cin >> test_cases;
+    // cin >> test_cases;
     for (int test_case = 1; test_case <= test_cases; test_case++)
     {
         // cout << "Case #" << test_case << ": ";

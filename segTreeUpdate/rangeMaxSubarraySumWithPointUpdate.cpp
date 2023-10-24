@@ -74,3 +74,18 @@ struct DynamicMaxSubarraySum
         return query(1, 1, N, pos, pos);
     }
 };
+
+/*
+
+100% working
+
+one base indexing is done
+segment tree for max subarray sum with poin update
+
+
+see the code for better understanding
+https://codeforces.com/contest/1884/submission/229399754
+
+time: O(nlog(n))
+
+*/
