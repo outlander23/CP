@@ -28,6 +28,12 @@ typedef tree<pair<int, int>, null_type,
              tree_order_statistics_node_update>
     ordered_set_pair;
 
+#ifdef ONPC
+#include "../Debug/debug.h"
+#else
+#define print(...) 42
+#endif
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
 //////////////////////////////////////-----/////////////////////////////////////////////
 
 const int INF = 1e18;        // infinity
@@ -118,14 +124,9 @@ void printArray(int array[], int sz)
 inline int64_t gilbertOrder(int x, int y, int pow, int rotate)
 {
     if (pow == 0)
-    {
         return 0;
-    }
     int hpow = 1 << (pow - 1);
-    int seg = (x < hpow) ? (
-                               (y < hpow) ? 0 : 3)
-                         : (
-                               (y < hpow) ? 1 : 2);
+    int seg = (x < hpow) ? ((y < hpow) ? 0 : 3) : ((y < hpow) ? 1 : 2);
     seg = (seg + rotate) & 3;
     const int rotateDelta[4] = {3, 0, 0, 1};
     int nx = x & (x ^ hpow), ny = y & (y ^ hpow);
@@ -139,9 +140,7 @@ inline int64_t gilbertOrder(int x, int y, int pow, int rotate)
 
 struct Query
 {
-    int l, r, idx;
-    int64_t ord;
-
+    int64_t l, r, idx, ord;
     inline void calcOrder()
     {
         ord = gilbertOrder(l, r, 21, 0);
@@ -157,110 +156,185 @@ inline bool operator<(const Query &a, const Query &b)
 //====================================================================================================
 //====================================================================================================
 
-const int N = 5e5 + 5;
-int n, q, l, r, x, u, v, k;
+const int N = 2e5 + 5;
 vector<Query> qry;
+
+int n, q, l, r, x, u, v, k;
 string s;
-int A[N], CNT[N];
 
-int color[N];
-vector<int> adj[N];
-
-void dfs(int node, int parr)
-{
-    if (s[node - 1] == '1')
-        color[node] = node;
-    else
-        color[node] = color[parr];
-
-    for (int child : adj[node])
-        if (child != parr)
-            dfs(child, node);
-}
-
-void func(int val, int operation, int &ans)
-{
-    if (operation == 1)
-    {
-    }
-    else
-    {
-    }
-}
+// void func(int val, int operation, int &ans)
+// {
+//     if (operation == 1)
+//     {
+//     }
+//     else
+//     {
+//     }
+// }
 
 void solve_the_probelm(int test_case)
 {
     cin >> n >> q;
 
-    for (int i = 0; i <= n; i++)
-        adj[i].clear(), color[i] = 0;
+    vector<int> a(n + 1), csum(n + 1);
 
-    for (int i = 2; i <= n; i++)
+    for (int i = 1; i <= n; i++)
+        cin >> a[i], csum[i] = csum[i - 1] + a[i];
+
+    // vector<int> temp = a;
+
+    // sort(temp.begin(), temp.end());
+    // int index = 0;
+    // a[temp[0].second] = ++index;
+
+    // for (int i = 1; i < temp.size(); i++)
+    // {
+    //     if (temp[i].first == temp[i - 1].first)
+    //     {
+    //         a[temp[i].second] = index;
+    //     }
+    //     else
+    //     {
+    //         a[temp[i].second] = ++index;
+    //     }
+    // }
+
+    // print(a);
+
+    vector<pair<int, int>> v;
+
+    for (int i = 1; i <= n; i++)
+        v.push_back({a[i], i});
+
+    sort(v.begin(), v.end());
+
+    // print(v);
+
+    int index = 0;
+    a[v[0].second] = ++index;
+    for (int i = 1; i < v.size(); i++)
     {
-        cin >> x;
-        adj[x].push_back(i);
-        adj[i].push_back(x);
+        if (v[i].first == v[i - 1].first)
+        {
+            a[v[i].second] = index;
+        }
+        else
+        {
+            a[v[i].second] = ++index;
+        }
     }
 
-    cin >> s;
-
-    dfs(1, 1);
+    vector<int> tmp(index + 10);
 
     // don't change
+    // -------------------------------
     qry.resize(q);
     vector<int> res(q);
     for (int i = 0; i < q; i++)
         cin >> l >> r, qry[i].l = l, qry[i].r = r, qry[i].idx = i, qry[i].calcOrder();
     sort(qry.begin(), qry.end());
+    int ans = 0;
+    int l = 1, r = 0;
+    // -------------------------------
 
-    int ans = 1;
-    map<int, int> cnt;
+    // maxheap<pair<int, int>> mx;
 
-    int l = 1, r = 1;
+    // for (auto q : qry)
+    // {
+
+    //     while (l > q.l)
+    //     { // currans += add(a[--l]);
+    //         l--;
+
+    //         cnt[a[l]]++;
+    //     }
+    //     while (r < q.r)
+    //     { // currans += add(a[++r]);
+    //         r++;
+    //         cnt[a[r]]++;
+    //     }
+    //     while (r > q.r)
+    //     { // currans += remove(a[r--]);
+
+    //         cnt[a[r]]--;
+    //         r--;
+    //     }
+    //     while (l < q.l)
+    //     { // currans += remove(a[l++]);
+
+    //         cnt[a[l]]--;
+    //         l++;
+    //     }
+
+    //     int len = q.r - q.l + 1;
+    //     int mx = 0;
+
+    //     // if (len / 2 < it.first)
+    //     //     res[q.idx] = 0;
+    //     // else
+    //     //     res[q.idx] = 1;
+    // }
 
     for (auto q : qry)
     {
+
+        // print(q.l, q.r, l, r);
         while (l > q.l)
         {
             // func(XOR[--l], 1, ans);
             // currans += add(a[--l]);
-            cnt[color[++l]]++;
-            if (cnt[color[l]] == 0)
-                ans++;
+            l--;
+            // add(A[l]);
+            tmp[a[l]]++;
         }
         while (r < q.r)
         {
             // func(XOR[++r], 1, ans);
             // currans += add(a[++r]);
-            cnt[color[++r]]++;
-            if (cnt[color[r]] == 1)
-                ans++;
+            r++;
+            // add(A[r]);
+            tmp[a[r]]++;
         }
         while (r > q.r)
         {
-            cnt[color[r--]]--;
-
-            if (cnt[color[r] == 0])
-                ans--;
 
             // func(XOR[r--], -1, ans);
             // currans += remove(a[r--]);
+
+            // del(A[r]);
+            tmp[a[r]]--;
+            r--;
         }
         while (l < q.l)
         {
-            cnt[color[l++]]--;
-
-            if (cnt[color[l]] == 0)
-                ans--;
 
             // func(XOR[l++], -1, ans);
             // currans += remove(a[l++]);
+
+            // del(A[l]);
+            tmp[a[l]]--;
+            l++;
         }
+        if (q.r - q.l + 1 == 1)
+        {
+            res[q.idx] = 0;
+            continue;
+        }
+        /// some change
+        int ans = 1;
+        for (int i = 1; i <= 80; ++i)
+        {
+            int aux = (rng() % (q.r - q.l + 1)) + q.l;
 
+            if (tmp[a[aux]] > (q.r - q.l + 1) / 2 and a[aux] == 1)
+                ans = 0;
+        }
         res[q.idx] = ans;
-    }
 
-    printVector(res);
+        // printVector(res);
+    }
+    for (int i = 1; i <= q; i++)
+        cout << (res[i - 1] ? "Yes" : "No") << endl;
 }
 
 #define endl "\n"
@@ -281,7 +355,7 @@ signed main()
     freopen("../output.txt", "w", stdout);
 #endif
 
-    // cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
+    cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
 
     for (int test_case = 1; test_case <= test_cases; test_case++)
         solve_the_probelm(test_case);

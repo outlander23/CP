@@ -85,6 +85,7 @@ public:
 // one base indexing
 // tested but it is better to use zero indexing
 // try to use zero indexing
+
 class SCC
 {
 public:

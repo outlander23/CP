@@ -120,5 +120,20 @@ void debug_out(Head H, Tail... T)
     cerr << " " << to_string(H);
     debug_out(T...);
 }
+template <typename T>
+void printarr(T arr[], int size)
+{
+
+    for (int i = 0; i < size; ++i)
+    {
+        if (i > 0)
+        {
+            cerr << ", ";
+        }
+        cerr << arr[i];
+    }
+}
+
+#define printarr(arr, size) cerr << "[" << #arr << "]: [", printarr(arr, size), cerr << "]" << endl
 
 #define print(...) cerr << "[" << #__VA_ARGS__ << "]:", debug_out(__VA_ARGS__)

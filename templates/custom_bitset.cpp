@@ -327,7 +327,7 @@ custom_bitset possible_subsets_knapsack(int target, const vector<int> &sizes)
 //====================================================================================================
 //====================================================================================================
 
-const int N = 4e3 + 5;
+const int N = 2e5 + 5;
 
 // FUA
 int A[N], B[N], C[N], D[N];
@@ -342,33 +342,6 @@ string s;
 
 void solve_the_probelm(int test_case)
 {
-
-    cin >> a >> b;
-    b += a;
-    int sum = (b * (b - 1) / 2) - (a * (a - 1) / 2);
-
-    vector<int> factors;
-    for (int i = 2; i * i <= sum; i++)
-        if (sum % i == 0)
-        {
-            factors.push_back(i);
-            if (sum / i != i)
-                factors.push_back(sum / i);
-        }
-    print(sum);
-    int ans = 1;
-    vector<int> v;
-
-    for (int i = a; i <= b; i++)
-        v.push_back(i);
-
-    custom_bitset bs = possible_subsets_knapsack(sum, v);
-
-    for (int x : factors)
-        if (bs.get(x))
-            ans = max(ans, x);
-
-    cout << ans << endl;
 }
 
 // #define endl "\n"
@@ -389,7 +362,7 @@ signed main()
     freopen("../output.txt", "w", stdout);
 #endif
 
-    cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
+    // cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
 
     for (int test_case = 1; test_case <= test_cases; test_case++)
         solve_the_probelm(test_case);

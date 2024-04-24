@@ -1,4 +1,4 @@
-const int N = 1e6 + 9, mod = 1e9 + 7;
+
 
 template <const int32_t MOD>
 struct modint
@@ -71,27 +71,4 @@ istream &operator>>(istream &in, modint<MOD> &n) { return in >> n.value; }
 template <int32_t MOD>
 ostream &operator<<(ostream &out, modint<MOD> n) { return out << n.value; }
 
-using mint = modint<mod>;
-
-struct Combi
-{
-    int n;
-    vector<mint> facts, finvs, invs;
-    Combi(int _n) : n(_n), facts(_n), finvs(_n), invs(_n)
-    {
-        facts[0] = finvs[0] = 1;
-        invs[1] = 1;
-        for (int i = 2; i < n; i++)
-            invs[i] = invs[mod % i] * (-mod / i);
-        for (int i = 1; i < n; i++)
-        {
-            facts[i] = facts[i - 1] * i;
-            finvs[i] = finvs[i - 1] * invs[i];
-        }
-    }
-    inline mint fact(int n) { return facts[n]; }
-    inline mint finv(int n) { return finvs[n]; }
-    inline mint inv(int n) { return invs[n]; }
-    inline mint ncr(int n, int k) { return n < k ? 0 : facts[n] * finvs[k] * finvs[n - k]; }
-};
-Combi C(N);
+using Z = modint<998244353>;

@@ -117,6 +117,7 @@ segtreemax<max_t> seg;
 seg.init(mxsz);
 see the code for better understanding
 https://codeforces.com/contest/1884/submission/229399754
+https://codeforces.com/contest/893/submission/242982999
 
 time: O(nlog(n))
 
