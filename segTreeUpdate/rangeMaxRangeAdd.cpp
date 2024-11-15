@@ -121,4 +121,5 @@ https://codeforces.com/contest/893/submission/242982999
 
 time: O(nlog(n))
 
+care full about null value
 */

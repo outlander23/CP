@@ -104,7 +104,7 @@ struct segtree
 /*
 
 This will make a range with a sepcific value
-NOTE: not add x to the value but replace value wiht the given value
+NOTE: not add x to the value but replace value with the given value
 100% working
 one base indexing is done
 

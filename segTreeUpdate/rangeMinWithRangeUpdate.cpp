@@ -117,4 +117,6 @@ segtreemin<min_t> seg;
 seg.init(mxsz);
 see the code for better understanding
 https://codeforces.com/contest/52/submission/229397260
+
+care full about null value
 */

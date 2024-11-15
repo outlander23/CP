@@ -1,5 +1,5 @@
 
-using i64 = long long;
+
 template <class Info, class Tag>
 struct LazySegmentTree
 {
@@ -169,19 +169,20 @@ struct LazySegmentTree
     }
 };
 
-constexpr i64 inf = 1E18;
+constexpr int inf = 1E18;
 struct Tag
 {
-    i64 add = 0;
+    int add = 0;
     void apply(const Tag &t)
     {
         add += t.add;
     }
 };
+
 struct Info
 {
-    i64 min = inf;
-    i64 max = -inf;
+    int min = inf;
+    int max = -inf;
     void apply(const Tag &t)
     {
         min += t.add;

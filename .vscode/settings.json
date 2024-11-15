@@ -85,7 +85,13 @@
     "typeindex": "cpp",
     "typeinfo": "cpp",
     "valarray": "cpp",
-    "variant": "cpp"
+    "variant": "cpp",
+    "expected": "cpp",
+    "format": "cpp",
+    "spanstream": "cpp",
+    "stacktrace": "cpp",
+    "stdfloat": "cpp",
+    "cerrno": "cpp"
   },
   "C_Cpp.errorSquiggles": "Disabled",
   "files.exclude": {
@@ -98,9 +104,8 @@
     "**/input.txt": true,
     "**/output.txt": true,
     "**.vscode": true,
-    "**/offical": true,
-   
-},
+    "**/offical": true
+  },
   "[python]": {
     "editor.defaultFormatter": "ms-python.autopep8"
   },

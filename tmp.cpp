@@ -1,4 +1,5 @@
 #ifdef ONPC
+#include <sys/resource.h>
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wrange-loop-construct"
 #pragma GCC diagnostic ignored "-Wsign-compare"
@@ -8,7 +9,7 @@
 #include "ext/pb_ds/assoc_container.hpp"
 
 using namespace std;
-using namespace __gnu_pbds; /*  */
+using namespace __gnu_pbds;
 
 bool startmemory;
 #define endln "\n"
@@ -19,9 +20,8 @@ bool startmemory;
 #define total_one(n) __builtin_popcountll(n)
 
 #ifdef ONPC
-#include "../Debug/debug.h"
+#include "Debug/debug.h"
 #else
-#define print(...) 42
 #define print(...) 42
 #define printarr(...) 42
 #endif
@@ -175,6 +175,10 @@ int lcm(int x1, int x2)
 {
     return ((x1 * x2) / __gcd(x1, x2));
 }
+bool isPowerOf2(int x)
+{
+    return x > 0 && (x & (x - 1)) == 0;
+}
 
 void printVector(vector<int> &array, int startIndex = 0)
 {
@@ -271,156 +275,98 @@ int rangesum(int l, int r)
     return (r - l + 1) * (r + l) / 2;
 }
 
-//////////////////////////////////////----Mo's-Algorithm----///////////////////////////////////////////
-//====================================================================================================
-//====================================================================================================
-
-inline int64_t gilbertOrder(int x, int y, int pow, int rotate)
-{
-    if (pow == 0)
-        return 0;
-    int hpow = 1 << (pow - 1);
-    int seg = (x < hpow) ? ((y < hpow) ? 0 : 3) : ((y < hpow) ? 1 : 2);
-    seg = (seg + rotate) & 3;
-    const int rotateDelta[4] = {3, 0, 0, 1};
-    int nx = x & (x ^ hpow), ny = y & (y ^ hpow);
-    int nrot = (rotate + rotateDelta[seg]) & 3;
-    int64_t subSquareSize = int64_t(1) << (2 * pow - 2);
-    int64_t ans = seg * subSquareSize;
-    int64_t add = gilbertOrder(nx, ny, pow - 1, nrot);
-    ans += (seg == 1 || seg == 2) ? add : (subSquareSize - add - 1);
-    return ans;
-}
-
-struct Query
-{
-    int64_t l, r, idx, ord;
-    inline void calcOrder()
-    {
-        ord = gilbertOrder(l, r, 21, 0);
-    }
-};
-
-inline bool operator<(const Query &a, const Query &b)
-{
-    return a.ord < b.ord;
-}
-
 //////////////////////////////////////----main-function----///////////////////////////////////////////
 //====================================================================================================
 //====================================================================================================
 
-const int N = 1e6 + 5;
-vector<Query> qry;
+const int N = 2e6 + 5;
+const int K = 3e5 + 5;
 
-string s;
-int n, q, l, r, x, u, v, k;
-int A[N];
-int cnt[N];
-void add(int idx, int &ans)
+// FUV
+char ch;
+string s, s1, s2;
+int n, m, b, a, c, d, e, f, l, r, t, x, y, z, p, q, k, u, v, i, w, h;
+
+// My Defination
+
+// https://cses.fi/problemset/task/2413
+// https://cses.fi/problemset/task/1744
+// https://cses.fi/problemset/task/1653
+// https://cses.fi/problemset/task/2181
+
+const int magic = 600;
+using z1 = modint<mod>;
+
+void pre_process()
 {
-    if (cnt[A[idx]] % 2 == 1)
-        ans--;
-    cnt[A[idx]]++;
-    if (cnt[A[idx]] % 2 == 1)
-        ans++;
 }
-
-void rmv(int idx, int &ans)
+void solve_the_problem(int test_case)
 {
-    if (cnt[A[idx]] % 2 == 1)
-        ans--;
-    cnt[A[idx]]--;
-    if (cnt[A[idx]] % 2 == 1)
-        ans++;
-}
+    /*
+       Please check the value of N :(
+       Please read the problem again before coding !
+    */
 
-void solve_the_probelm(int test_case)
-{
+    cin >> n;
 
-    cin >> n >> q;
-
-    for (int i = 1; i <= n; i++)
-        cin >> A[i];
-
-    // don't change
-    // -------------------------------
-    qry.resize(q);
-    vector<int> res(q);
-    for (int i = 0; i < q; i++)
-        cin >> l >> r, qry[i].l = l, qry[i].r = r, qry[i].idx = i, qry[i].calcOrder();
-    sort(qry.begin(), qry.end());
-    int ans = 0;
-    int l = 1, r = 0;
-    // -------------------------------
-
-    for (auto q : qry)
+    int tmp = n;
+    int ans = 1;
+    while (tmp)
     {
-
-        // print(q.l, q.r, l, r);
-        while (l > q.l)
-        {
-            // func(XOR[--l], 1, ans);
-            // currans += add(a[--l]);
-
-            add(--l, ans);
-        }
-        while (r < q.r)
-        {
-            // func(XOR[++r], 1, ans);
-            // currans += add(a[++r]);
-            add(++r, ans);
-        }
-        while (r > q.r)
-        {
-            // func(XOR[r--], -1, ans);
-            // currans += remove(a[r--]);
-
-            rmv(r--, ans);
-        }
-        while (l < q.l)
-        {
-
-            // func(XOR[l++], -1, ans);
-            // currans += remove(a[l++]);
-            rmv(l++, ans);
-        }
-
-        res[q.idx] = ans;
+        tmp /= 2;
+        ans *= 2;
     }
 
-    for (int i = 1; i <= q; i++)
-        cout << (res[i - 1] == 0 ? "Yes" : "No") << endl;
-
     for (int i = 1; i <= n; i++)
-        cnt[A[i]] = 0;
+    {
+        cout << ans + 1 << " \n"[i == n];
+    }
 }
 
-#define endl "\n"
-// #define ONLINE_JUDGE
-
-///////////////////////////////////------------------------///////////////////////////////////////////
-//====================================================================================================
-//====================================================================================================
-
+bool endmemory;
 signed main()
 {
 
-    int test_cases = 1;
-    ios_base::sync_with_stdio(0), cin.tie(0), cout.tie(0);
-
-#ifndef ONLINE_JUDGE
-    freopen("../input.txt", "r", stdin);
-    freopen("../output.txt", "w", stdout);
+#ifdef ONPC
+    const rlim_t stackSize = 1024 * 1024 * 1024; // 1 GB
+    struct rlimit rl;
+    rl.rlim_cur = stackSize;
+    rl.rlim_max = stackSize;
 #endif
 
-    cin >> test_cases; ////////////////////////////////////______test_case_____/////////////////////////
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    cout << fixed << setprecision(14);
 
+#ifdef ONPC
+
+    char name[] = "input.txt";
+
+    freopen(name, "r", stdin);
+    freopen("output.txt", "w", stdout);
+
+#endif
+
+    pre_process();
+
+    cin >> test_cases;
     for (int test_case = 1; test_case <= test_cases; test_case++)
-        solve_the_probelm(test_case);
+    {
+        // cout << "Case " << test_case << ": ";
+        solve_the_problem(test_case);
+#ifdef ONPC
+        // cout << "================================================================" << endln;
+#endif
+    }
 
-#ifndef ONLINE_JUDGE
-    cout << "\nExecution Time : " << 1.0 * clock() / CLOCKS_PER_SEC << "s ";
+#ifdef ONPC
+    if (setrlimit(RLIMIT_STACK, &rl) != 0)
+        std::cerr << "Error setting stack size: " << strerror(errno) << std::endl;
+    cout << "Stack size: " << stackSize / 1024 / 1024 / 1024 << "GB \n";
+    cout << "Execution Time : " << 1.0 * clock() / CLOCKS_PER_SEC << "s\n";
+    cout << "Execution Memory : " << (&endmemory - &startmemory) / (1024 * 1024) << "MB\n";
+
 #endif
 
     return 0;
