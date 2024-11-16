@@ -111,6 +111,9 @@ struct min_t
 };
 
 /*
+
+[l,r]+=add
+[l,r]=min
 100% working
 one base indexing is done
 segtreemin<min_t> seg;

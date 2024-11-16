@@ -86,7 +86,3 @@ daysInMounth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
 
-for i in range(1,101):
-    for j in range(1,101):
-        for k in range(1,101):
-            print(i,j,k);

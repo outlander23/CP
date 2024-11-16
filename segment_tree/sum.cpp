@@ -108,7 +108,7 @@ NOTE: not add x to the value but replace value with the given value
 100% working
 one base indexing is done
 
-segtreesum<min_t> seg;
+segtreesum<my_data> seg;
 seg.init(mxsz);
 see the code for better understanding
 https://codeforces.com/contest/52/submission/229397260

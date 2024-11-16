@@ -111,6 +111,9 @@ struct max_t
 };
 
 /*
+
+[l,r]+=x;
+[l,r]= max
 100% working
 one base indexing is done
 segtreemax<max_t> seg;
